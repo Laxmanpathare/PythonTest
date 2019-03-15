@@ -28,12 +28,12 @@ def regex(l):
     return 'Here what you just did: ' +str(l)
 
 @app.route('/login')
-def logipage():
+def loginpage():
     return '''<form action='/verifylogin' method='post'>
               User Name:<input type='test' name='uname' /> <br>
               Password:<input type='password' name='pw'/> <br>
                        <input type='submit' value='Login'/>
-              </from>'''
+              </form>'''
 @app.post('/verifylogin')
 def vlogin():
     u=bottle.request.forms.get('uname')
@@ -41,7 +41,7 @@ def vlogin():
     if not (u=='abc' and p=='xyz'):
         return 'Login Failed'
     else:
-        #return 'Login Successful'
+        # #return 'Login Successful'
         import sqlite3
         con=sqlite3.connect('mydb.sqlite3')
         cur=con.cursor()
@@ -50,7 +50,28 @@ def vlogin():
         print(bottle.TEMPLATE_PATH)
         bottle.TEMPLATE_PATH.append(r'C:\Users\Admin\Desktop\Laxman\bin')
         return bottle.template('report.tpl',res=result)
-        #return str(result)
+        # #return str(result)
+
+@app.route('/ml')
+def ml():
+    #bottle.TEMPLATE_PATH.append(r'C:\Users\Admin\Desktop\Laxman\bin')
+    return bottle.template('mach_display.tpl',)
+@app.post('/submitdata')
+def readdata():
+    P1=bottle.request.forms.get('p1')
+    P2=bottle.request.forms.get('p2')
+    P3=bottle.request.forms.get('p3')
+    P4=bottle.request.forms.get('p4')
+    import machlearn
+    res=machlearn.getresult(P1,P2,P3,P4)
+    if res==0:
+        return 'Type is : Setosa'
+    elif res==1:
+        return 'Type is : Versicolor'
+    elif res==2:
+        return 'Type is : Virginica'
+    else:
+        return 'Type is : Not Defined'
 
 @app.route('/json')
 def jsondata():
